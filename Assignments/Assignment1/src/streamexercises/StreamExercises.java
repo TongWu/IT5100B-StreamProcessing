@@ -60,7 +60,16 @@ public class StreamExercises {
      */
     public static DoubleStream movingAverage(DoubleStream temperatures, int n) {
         // TODO: Complete the movingAverage method
-        throw new RuntimeException("StreamExercises::movingAverage has not been implemented yet!");
+        // throw new RuntimeException("StreamExercises::movingAverage has not been implemented yet!");
+
+        // Convert double stream to stream<double>
+        Stream<Double> temp = temperatures.boxed();
+        // Create windows for temperatures lst
+        Stream<Stream<Double>> windowTemp = window(temp, n);
+        // Calculate each window's average
+        Stream<Double> averageTemp = windowTemp.map(window -> window.collect(Collectors.averagingDouble(Double::doubleValue)));
+
+        return averageTemp.mapToDouble(Double::doubleValue);
     }
 
     /**
@@ -70,7 +79,14 @@ public class StreamExercises {
      */
     public static int totalScore(Stream<Character> s) {
         // TODO: Complete the totalScore method
-        throw new RuntimeException("StreamExercises::totalScore has not been implemented yet!");
+        // throw new RuntimeException("StreamExercises::totalScore has not been implemented yet!");
+        BowlingGameStatistics score = s.reduce(
+                new BowlingGameStatistics(),        // Initial score
+                (game, result) -> game.put(result), // Sum score
+                (game1, game2) -> game1             // Concat function
+        );
+
+        return score.get();
     }
 
     /**
@@ -92,7 +108,13 @@ public class StreamExercises {
      */
     public static ImmutableMap<String, User> changeStateOfUserInMap(ImmutableMap<String, User> map, UserStateChange u) {
         // TODO: Complete the changeStateOfUserInMap method
-        throw new RuntimeException("StreamExercises::changeStateOfUserInMap has not been implemented yet!");
+        // throw new RuntimeException("StreamExercises::changeStateOfUserInMap has not been implemented yet!");
+
+        // Get user object according to the user ID, if not exist then create an empty user
+        User user = map.getOrDefault(u.getTargetUserId(), User.empty(u.getTargetUserId()));
+        // Then update the user state
+        User updated = u.changeUserState(user);
+        return map.put(u.getTargetUserId(), updated);
     }
 
     /**
@@ -103,7 +125,13 @@ public class StreamExercises {
      */
     public static ImmutableMap<String, User> combineMaps(ImmutableMap<String, User> im1, ImmutableMap<String, User> im2) {
         // TODO: Complete the combineMaps method
-        throw new RuntimeException("StreamExercises::combineMaps has not been implemented yet!");
+        // throw new RuntimeException("StreamExercises::combineMaps has not been implemented yet!");
+        return im2.reduceEntries(im1, (accMap, entry) -> {
+            User existingUser = accMap.getOrDefault(entry.getKey(), User.empty(entry.getKey()));    // Check status
+            User newUser = entry.getValue();                                                        // Get user status
+            User combinedUser = existingUser.combineWith(newUser);                                  // Combine user status between im1 and im2
+            return accMap.put(entry.getKey(), combinedUser);                                        // Update accMap
+        });
     }
 
     /**
