@@ -44,11 +44,12 @@ public class StreamExercises {
         }
         
         // Convert a stream to list
-        List<T> list = stream.collect(Collectors.toList());
+        List<T> list = stream.toList();
         // Create a sliding window stream
-        return IntStream.range(0, list.size()-windowSize+1)
+        return IntStream
+                .range(0, list.size()-windowSize+1)
                 .mapToObj(start -> list.subList(start, start+windowSize).stream())
-                .collect(Collectors.toList()).stream();
+                .toList().stream();
     }
 
     /**
@@ -62,7 +63,6 @@ public class StreamExercises {
         // TODO: Complete the movingAverage method
         // throw new RuntimeException("StreamExercises::movingAverage has not been implemented yet!");
 
-        // Convert double stream to stream<double>
         Stream<Double> temp = temperatures.boxed();
         // Create windows for temperatures lst
         Stream<Stream<Double>> windowTemp = window(temp, n);
@@ -82,7 +82,7 @@ public class StreamExercises {
         // throw new RuntimeException("StreamExercises::totalScore has not been implemented yet!");
         BowlingGameStatistics score = s.reduce(
                 new BowlingGameStatistics(),        // Initial score
-                (game, result) -> game.put(result), // Sum score
+                BowlingGameStatistics::put,         // Sum score
                 (game1, game2) -> game1             // Concat function
         );
 
