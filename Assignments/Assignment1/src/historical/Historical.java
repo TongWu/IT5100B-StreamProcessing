@@ -52,7 +52,8 @@ public class Historical<T> {
      */
     public static <T> Historical<T> of(T value) {
         // TODO: Complete the of() method
-        throw new RuntimeException("Historical::of has not been implemented yet!");
+        // throw new RuntimeException("Historical::of has not been implemented yet!");
+        return new Historical<>(Optional.ofNullable(value), Optional.empty());
     }
 
     /**
@@ -61,7 +62,8 @@ public class Historical<T> {
      */
     public Optional<T> get() {
         // TODO: Complete the get() method
-        throw new RuntimeException("Historical::get has not been implemented yet!");
+        // throw new RuntimeException("Historical::get has not been implemented yet!");
+        return this.value;
     }
 
     /**
@@ -73,7 +75,16 @@ public class Historical<T> {
      */
     public <R> Historical<R> replace(R newValue) {
         // TODO: Complete the replace(R) method
-        throw new RuntimeException("Historical::replace has not been implemented yet!");
+        // throw new RuntimeException("Historical::replace has not been implemented yet!");
+
+        // If new value equals to the current value
+        if (this.value.equals(Optional.ofNullable(newValue))) {
+            // Return current object
+            return (Historical<R>) this;
+        } else {
+            // Else, create a new object, with historical value
+            return new Historical<>(Optional.ofNullable(newValue), Optional.of(this));
+        }
     }
 
     /**
@@ -86,7 +97,9 @@ public class Historical<T> {
      */
     public <R> Historical<R> map(Function<? super T, ? extends R> f) {
         // TODO: Complete the map(Function<? super T, ? extends R>) method
-        throw new RuntimeException("Historical::map has not been implemented yet!");
+        // throw new RuntimeException("Historical::map has not been implemented yet!");
+
+        return this.value.map(v -> replace(f.apply(v))).orElse((Historical<R>) this);
     }
 
     /**
@@ -98,7 +111,9 @@ public class Historical<T> {
      */
     public Historical<T> filter(Predicate<? super T> f) {
         // TODO: Complete the filter(Predicate<? super T>) method
-        throw new RuntimeException("Historical::filter has not been implemented yet!");
+        // throw new RuntimeException("Historical::filter has not been implemented yet!");
+
+        return this.value.filter(f).map(v -> this).orElseGet(() -> replace(null));
     }
 
     /**
@@ -111,7 +126,27 @@ public class Historical<T> {
      */
     public <R> Historical<R> flatMap(Function<? super T, ? extends Historical<R>> f) {
         // TODO: Complete the flatMap(Function<? super T, ? extends Historical<R>>) method
-        throw new RuntimeException("Historical::flatMap has not been implemented yet!");
+        // throw new RuntimeException("Historical::flatMap has not been implemented yet!");
+
+        return this.value.map(v -> {
+            // Apply the mapping function to the current value.
+            Historical<R> mappedResult = f.apply(v);
+            // Add a pointer for the current object
+            Historical<R> current = (Historical<R>) this;
+
+            // Concat with the previous history objects elements
+            return concat(current, mappedResult);
+        }).orElse((Historical<R>) this);
+
+    }
+
+    private <R> Historical<R> concat(Historical<R> base, Historical<R> target) {
+        // If there is a previous attribute, call concat recursively
+        return target
+                .previous
+                .map(prev -> concat(base, (Historical<R>) prev)
+                .replace(target.value.get()))
+                .orElse(base);
     }
 
     /**
@@ -120,7 +155,8 @@ public class Historical<T> {
      */
     public Optional<Historical<?>> undo() {
         // TODO: Complete the undo() method
-        throw new RuntimeException("Historical::undo has not been implemented yet!");
+        // throw new RuntimeException("Historical::undo has not been implemented yet!");
+        return this.previous;
     }
 
 }
