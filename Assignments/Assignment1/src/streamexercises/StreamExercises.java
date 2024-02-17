@@ -20,7 +20,7 @@ public class StreamExercises {
         // throw new RuntimeException("StreamExercises::happySum has not been implemented yet!");
         
         return IntStream.rangeClosed(1, n)
-                        .map(i -> i*i)      // Sequence from 1^2 to n^2
+                        .map(i -> i*i)         // Sequence from 1^2 to n^2
                         .sum()
                 + IntStream.range(0, n-1)      // Sequence from n^2 to 2^2
                         .map(i -> (n-i)*(n-i))
@@ -49,7 +49,8 @@ public class StreamExercises {
         return IntStream
                 .range(0, list.size()-windowSize+1)
                 .mapToObj(start -> list.subList(start, start+windowSize).stream())
-                .toList().stream();
+                .toList()
+                .stream();
     }
 
     /**
@@ -67,7 +68,9 @@ public class StreamExercises {
         // Create windows for temperatures lst
         Stream<Stream<Double>> windowTemp = window(temp, n);
         // Calculate each window's average
-        Stream<Double> averageTemp = windowTemp.map(window -> window.collect(Collectors.averagingDouble(Double::doubleValue)));
+        Stream<Double> averageTemp = windowTemp.map(
+            window -> window.collect(Collectors.averagingDouble(Double::doubleValue))
+        );
 
         return averageTemp.mapToDouble(Double::doubleValue);
     }
@@ -96,7 +99,9 @@ public class StreamExercises {
      */
     public static Map<String, User> collectToDb(Stream<UserStateChange> userStateChanges) {
         return userStateChanges.parallel()
-                .reduce(ImmutableMap.empty(), StreamExercises::changeStateOfUserInMap, StreamExercises::combineMaps)
+                .reduce(ImmutableMap.empty(),
+                        StreamExercises::changeStateOfUserInMap,
+                        StreamExercises::combineMaps)
                 .toMap();
     }
 
