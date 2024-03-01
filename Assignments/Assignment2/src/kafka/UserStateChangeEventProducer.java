@@ -3,6 +3,7 @@ package kafka;
 import kafka.model.UserStateChange;
 import kafka.serdes.UserStateChangeSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderOptions;
+import reactor.kafka.sender.SenderRecord;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +60,20 @@ public class UserStateChangeEventProducer {
      */
     public Mono<Void> send(UserStateChange s) {
         // TODO: Complete the send method.
-        return null;
+        return Mono.create(sink -> {
+            sender.send(Mono.just(s)
+                    .map(stateChange -> SenderRecord.create(new ProducerRecord<>(TOPIC, UUID.randomUUID(), stateChange), null)))
+                    .subscribe(result -> {
+                        // Log message
+                        log.info("Message sent to topic {}", result.recordMetadata().topic());
+                        sink.success();
+                    }, error -> {
+                        // Log error
+                        log.error("Failed: ", error);
+                        sink.error(error);
+                    });
+        });
+        //return null;
     }
 
     /**

@@ -65,6 +65,13 @@ public class UserStateChangeEventConsumer {
         Flux<UserStateChange> events = consumer.consume();
         // TODO: Do something with the events so that when running the main method, every time a state change is streamed from Kafka, it will print out the latest state of the data store.
         // Write your solution after this line.
+
+        ImmutableMap<UUID, User> InitialState = ImmutableMap.empty();
+        events.scan(InitialState, (cur, e) -> {
+            return changeStateOfUserInMap(cur, e);
+        }).doOnNext(update -> {
+            System.out.println(update);
+        }).blockLast();
     }
     /**
      * Performs changes on a map of users using a {@link UserStateChange} event. If the target of the state change is not in the map, and empty {@link User} of the same ID will be created.
@@ -74,6 +81,10 @@ public class UserStateChangeEventConsumer {
      */
     public static ImmutableMap<UUID, User> changeStateOfUserInMap(ImmutableMap<UUID, User> map, UserStateChange u) {
         // TODO: Adapt your solution from Assignment 1 into this one.
-        return null;
+        UUID targetUserId = u.getTargetUserId();
+        User current = map.getOrDefault(targetUserId, User.empty(targetUserId));
+        User newUser = u.changeUserState(current);
+        return map.put(targetUserId, newUser);
+        // return null;
     }
 }
