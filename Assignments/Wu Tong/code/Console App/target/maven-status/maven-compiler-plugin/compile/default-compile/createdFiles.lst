@@ -1,0 +1,4 @@
+kafka/ChatMessage.class
+Main.class
+serdes/ChatMessageDeserializationSchema.class
+serdes/ChatMessageSerializationSchema.class

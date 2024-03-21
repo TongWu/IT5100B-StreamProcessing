@@ -1,0 +1,4 @@
+/Users/tedwu/Documents/National University of Singapore/24Spring/IT5100B-StreamProcessing/Course Material/Lecture 6 Demo/Flink Sensor Data Adjuster/src/main/java/serdes/ChatMessageDeserializationSchema.java
+/Users/tedwu/Documents/National University of Singapore/24Spring/IT5100B-StreamProcessing/Course Material/Lecture 6 Demo/Flink Sensor Data Adjuster/src/main/java/kafka/ChatMessage.java
+/Users/tedwu/Documents/National University of Singapore/24Spring/IT5100B-StreamProcessing/Course Material/Lecture 6 Demo/Flink Sensor Data Adjuster/src/main/java/Main.java
+/Users/tedwu/Documents/National University of Singapore/24Spring/IT5100B-StreamProcessing/Course Material/Lecture 6 Demo/Flink Sensor Data Adjuster/src/main/java/serdes/ChatMessageSerializationSchema.java

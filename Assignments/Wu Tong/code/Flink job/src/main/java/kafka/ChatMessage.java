@@ -1,8 +1,7 @@
-package model;
+package kafka;
 
 import java.util.UUID;
 import java.io.Serializable;
-
 public class ChatMessage implements Serializable {
     private static final long serialVersionUID = 1L;
     private UUID senderID;
@@ -32,14 +31,4 @@ public class ChatMessage implements Serializable {
     public void setMessage(String message) {
         this.message = message;
     }
-
-    @Override
-    public String toString() {
-        return "KafkaEvent{" +
-                "senderID=" + senderID +
-                ", recipientID=" + recipientID +
-                ", message=" + message + '\'' +
-                '}';
-    }
-
 }
